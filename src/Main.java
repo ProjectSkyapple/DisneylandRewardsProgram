@@ -65,6 +65,46 @@ public class Main {
         }
         catch (FileNotFoundException exception) { /* Do nothing when a FileNotFoundException is thrown. */ }
 
-        Customer[] preferredCustomerArray = new Customer[0];
+        Customer[] preferredCustomerArray;
+
+        if (numPreferredCustomers > 0) {
+            preferredCustomerArray = new Customer[numPreferredCustomers];
+
+            inputFileStream = new FileInputStream(preferredCustomerFileName);
+            inputFileScanner = new Scanner(inputFileStream);
+
+            int discountPercentage;
+            int bonusBucks;
+            String discountPercentageOrBonusBucks;
+
+            for (int i = 0; i < numPreferredCustomers; i++) {
+                guestId = inputFileScanner.next();
+                firstName = inputFileScanner.next();
+                lastName = inputFileScanner.next();
+                amountSpent = inputFileScanner.nextDouble();
+                discountPercentageOrBonusBucks = inputFileScanner.next();
+
+                if (discountPercentageOrBonusBucks.contains("%")) {
+                    discountPercentage = Integer.parseInt(discountPercentageOrBonusBucks.substring(0,
+                            discountPercentageOrBonusBucks.indexOf("%")));
+
+                    preferredCustomerArray[i] = new GoldCustomer(firstName, lastName, guestId, amountSpent,
+                            discountPercentage);
+                }
+                else {
+                    bonusBucks = Integer.parseInt(discountPercentageOrBonusBucks);
+
+                    preferredCustomerArray[i] = new PlatinumCustomer(firstName, lastName, guestId, amountSpent,
+                            bonusBucks);
+                }
+            }
+
+            inputFileScanner.close();
+
+            // TODO: Remove debug statements
+            for (Customer customer : preferredCustomerArray) {
+                System.out.println(customer);
+            }
+        }
     }
 }
