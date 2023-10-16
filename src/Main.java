@@ -106,5 +106,33 @@ public class Main {
                 System.out.println(customer);
             }
         }
+
+        System.out.print("Enter the order file name: ");
+        String orderFileName = scnr.nextLine();
+
+        inputFileStream = new FileInputStream(orderFileName);
+        inputFileScanner = new Scanner(inputFileStream);
+
+        while (inputFileScanner.hasNextLine()) {
+            String orderLine = inputFileScanner.nextLine();
+
+            String orderGuestId;
+            String guestStatus;
+            int guestArrayIndex;
+            String drinkSizeString;
+            char drinkSize;
+            String drinkType;
+            double pricePerSquareInch;
+            int numDrinks;
+
+            Scanner orderLineScanner = new Scanner(orderLine);
+
+            // TODO: For core implementation, assume all orders in the order file are valid.
+            orderGuestId = orderLineScanner.next();
+            drinkSize = orderLineScanner.next().charAt(0);
+            drinkType = orderLineScanner.next();
+            pricePerSquareInch = orderLineScanner.nextDouble();
+            numDrinks = orderLineScanner.nextInt();
+        }
     }
 }
