@@ -4,6 +4,58 @@ import java.io.FileInputStream;
 import java.util.Scanner;
 
 public class Main {
+    public static double calculateOrderCost(char drinkSize, String drinkType, double pricePerSquareInch, int numDrinks) {
+        // All costs in USD.
+        final double sodaPerOunceCost = 0.20;
+        final double teaPerOunceCost = 0.12;
+        final double punchPerOunceCost = 0.15;
+
+        // All surface area calculations in square inches.
+        // Surface area formula: pi * cup diameter * cup height
+        final double smallSurfaceArea = Math.PI * 4 * 4.5;
+        final double mediumSurfaceArea = Math.PI * 4.5 * 5.75;
+        final double largeSurfaceArea = Math.PI * 5.5 * 7;
+
+        // All volumes in fluid ounces.
+        final double smallVolume = 12;
+        final double mediumVolume = 20;
+        final double largeVolume = 32;
+
+        double orderCost = 0;
+
+        // Order cost formula: Number of drinks to buy * (drink per-ounce cost * drink volume + graphic price per square
+        // inch * drink surface area)
+        if (drinkSize == 'S' && drinkType.equals("soda")) {
+            orderCost = numDrinks * (sodaPerOunceCost * smallVolume + pricePerSquareInch * smallSurfaceArea);
+        }
+        else if (drinkSize == 'M' && drinkType.equals("soda")) {
+            orderCost = numDrinks * (sodaPerOunceCost * mediumVolume + pricePerSquareInch * mediumSurfaceArea);
+        }
+        else if (drinkSize == 'L' && drinkType.equals("soda")) {
+            orderCost = numDrinks * (sodaPerOunceCost * largeVolume + pricePerSquareInch * largeSurfaceArea);
+        }
+        else if (drinkSize == 'S' && drinkType.equals("tea")) {
+            orderCost = numDrinks * (teaPerOunceCost * smallVolume + pricePerSquareInch * smallSurfaceArea);
+        }
+        else if (drinkSize == 'M' && drinkType.equals("tea")) {
+            orderCost = numDrinks * (teaPerOunceCost * mediumVolume + pricePerSquareInch * mediumSurfaceArea);
+        }
+        else if (drinkSize == 'L' && drinkType.equals("tea")) {
+            orderCost = numDrinks * (teaPerOunceCost * largeVolume + pricePerSquareInch * largeSurfaceArea);
+        }
+        else if (drinkSize == 'S' && drinkType.equals("punch")) {
+            orderCost = numDrinks * (punchPerOunceCost * smallVolume + pricePerSquareInch * smallSurfaceArea);
+        }
+        else if (drinkSize == 'M' && drinkType.equals("punch")) {
+            orderCost = numDrinks * (punchPerOunceCost * mediumVolume + pricePerSquareInch * mediumSurfaceArea);
+        }
+        else if (drinkSize == 'L' && drinkType.equals("punch")) {
+            orderCost = numDrinks * (punchPerOunceCost * largeVolume + pricePerSquareInch * largeSurfaceArea);
+        }
+
+        return orderCost;
+    }
+
     public static void main(String[] args) throws IOException {
         Scanner scnr = new Scanner(System.in);
 
@@ -133,6 +185,11 @@ public class Main {
             drinkType = orderLineScanner.next();
             pricePerSquareInch = orderLineScanner.nextDouble();
             numDrinks = orderLineScanner.nextInt();
+
+            double orderCost = calculateOrderCost(drinkSize, drinkType, pricePerSquareInch, numDrinks);
+
+            // TODO: Remove debug statement
+            System.out.println(orderCost);
         }
     }
 }
