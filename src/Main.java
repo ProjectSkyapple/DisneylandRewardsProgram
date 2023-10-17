@@ -1,6 +1,4 @@
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.FileInputStream;
+import java.io.*;
 import java.util.Scanner;
 
 public class Main {
@@ -338,5 +336,36 @@ public class Main {
                 System.out.println(c);
             }
         }
+
+        FileOutputStream outputFileStream = new FileOutputStream("customer.dat");
+        PrintWriter outputFileWriter = new PrintWriter(outputFileStream);
+
+        for (Customer c : regularCustomerArray) {
+            outputFileWriter.print(c.getGuestId() + " ");
+            outputFileWriter.print(c.getFirstName() + " ");
+            outputFileWriter.print(c.getLastName() + " ");
+            outputFileWriter.print(c.getAmountSpent() + "\n");
+        }
+
+        outputFileWriter.close();
+
+        outputFileStream = new FileOutputStream("preferred.dat");
+        outputFileWriter = new PrintWriter(outputFileStream);
+
+        for (Customer c : preferredCustomerArray) {
+            outputFileWriter.print(c.getGuestId() + " ");
+            outputFileWriter.print(c.getFirstName() + " ");
+            outputFileWriter.print(c.getLastName() + " ");
+            outputFileWriter.print(c.getAmountSpent() + " ");
+
+            if (c.getAmountSpent() >= 200) {
+                outputFileWriter.print(((PlatinumCustomer) c).getBonusBucks() + "\n");
+            }
+            else {
+                outputFileWriter.print(((GoldCustomer) c).getDiscountPercentage() + "%\n");
+            }
+        }
+
+        outputFileWriter.close();
     }
 }
