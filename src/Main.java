@@ -311,6 +311,21 @@ public class Main {
                     }
                 }
             }
+            else {
+                if (orderCost >= ((PlatinumCustomer) customer).getBonusBucks()) {
+                    orderCost -= ((PlatinumCustomer) customer).getBonusBucks();
+                    ((PlatinumCustomer) customer).setBonusBucks((int) (orderCost / 5));
+                }
+                else {
+                    ((PlatinumCustomer) customer).setBonusBucks(
+                            ((PlatinumCustomer) customer).getBonusBucks() - (int) Math.ceil(orderCost)
+                    );
+
+                    orderCost = 0;
+                }
+
+                customer.setAmountSpent(customer.getAmountSpent() + orderCost);
+            }
 
             // TODO: Remove debug statements
             System.out.println("Regular ---");
