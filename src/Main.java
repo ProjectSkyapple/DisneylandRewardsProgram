@@ -56,6 +56,33 @@ public class Main {
         return orderCost;
     }
 
+    public static Customer[] addPreferredCustomerToPreferredCustomerArray(Customer preferredCustomer,
+                                                                          Customer[] originalArray) {
+        Customer[] newArray = new Customer[originalArray.length + 1];
+
+        for (int i = 0; i < originalArray.length; i++) {
+            newArray[i] = originalArray[i];
+        }
+
+        newArray[newArray.length - 1] = preferredCustomer;
+
+        return newArray;
+    }
+
+    public static Customer[] removeRegularCustomerFromRegularCustomerArray(int index, Customer[] originalArray) {
+        for (int i = index; i < originalArray.length - 1; i++) {
+            originalArray[i] = originalArray[i + 1];
+        }
+
+        Customer[] newArray = new Customer[originalArray.length - 1];
+
+        for (int i = 0; i < newArray.length; i++) {
+            newArray[i] = originalArray[i];
+        }
+
+        return newArray;
+    }
+
     public static void main(String[] args) throws IOException {
         Scanner scnr = new Scanner(System.in);
 
@@ -117,7 +144,7 @@ public class Main {
         }
         catch (FileNotFoundException exception) { /* Do nothing when a FileNotFoundException is thrown. */ }
 
-        Customer[] preferredCustomerArray;
+        Customer[] preferredCustomerArray = new Customer[0];
 
         if (numPreferredCustomers > 0) {
             preferredCustomerArray = new Customer[numPreferredCustomers];
@@ -168,9 +195,10 @@ public class Main {
         while (inputFileScanner.hasNextLine()) {
             String orderLine = inputFileScanner.nextLine();
 
+            Customer customer = null;
             String orderGuestId;
-            String guestStatus;
-            int guestArrayIndex;
+            String guestStatus = "";
+            int guestArrayIndex = -1;
             String drinkSizeString;
             char drinkSize;
             String drinkType;
@@ -190,6 +218,110 @@ public class Main {
 
             // TODO: Remove debug statement
             System.out.println(orderCost);
+
+            for (int i = 0; i < regularCustomerArray.length; i++) {
+                if (regularCustomerArray[i].getGuestId().equals(orderGuestId)) {
+                    // TODO: Guest ID matches order.
+                    customer = regularCustomerArray[i];
+                    guestStatus = "regular";
+                    guestArrayIndex = i;
+                    break;
+                }
+            }
+
+            for (int i = 0; i < preferredCustomerArray.length; i++) {
+                if (preferredCustomerArray[i].getGuestId().equals(orderGuestId)) {
+                    // TODO: Guest ID matches order.
+                    customer = preferredCustomerArray[i];
+                    double guestAmountSpent = preferredCustomerArray[i].getAmountSpent();
+
+                    if (guestAmountSpent >= 50 && guestAmountSpent < 200) {
+                        guestStatus = "gold";
+                    }
+                    else {
+                        guestStatus = "platinum";
+                    }
+
+                    guestArrayIndex = i;
+                    break;
+                }
+            }
+
+            if (customer.getAmountSpent() < 200) {
+                double newAmountSpentBeforeAddedDiscounts = customer.getAmountSpent() + orderCost;
+
+                if (newAmountSpentBeforeAddedDiscounts >= 150) {
+                    customer.setAmountSpent(customer.getAmountSpent() + 0.85 * orderCost);
+                }
+                else if (newAmountSpentBeforeAddedDiscounts >= 100) {
+                    customer.setAmountSpent(customer.getAmountSpent() + 0.90 * orderCost);
+                }
+                else if (newAmountSpentBeforeAddedDiscounts >= 50) {
+                    customer.setAmountSpent(customer.getAmountSpent() + 0.95 * orderCost);
+                }
+                else {
+                    customer.setAmountSpent(newAmountSpentBeforeAddedDiscounts);
+                }
+
+                if (customer.getAmountSpent() >= 200) {
+                    Customer upgradedCustomer = new PlatinumCustomer(customer.getFirstName(),
+                            customer.getLastName(), customer.getGuestId(), customer.getAmountSpent(),
+                            (int) ((customer.getAmountSpent() - 200) / 5));
+
+                    if (guestStatus.equals("regular")) {
+                        preferredCustomerArray = addPreferredCustomerToPreferredCustomerArray(upgradedCustomer,
+                                preferredCustomerArray);
+                        regularCustomerArray = removeRegularCustomerFromRegularCustomerArray(guestArrayIndex,
+                                regularCustomerArray);
+                    }
+                    else {
+                        preferredCustomerArray[guestArrayIndex] = upgradedCustomer;
+                    }
+                }
+                else if (customer.getAmountSpent() >= 50 && guestStatus.equals("regular")) {
+                    int newDiscountPercentage = 0;
+
+                    if (customer.getAmountSpent() >= 150) {
+                        newDiscountPercentage = 15;
+                    }
+                    else if (customer.getAmountSpent() >= 100) {
+                        newDiscountPercentage = 10;
+                    }
+                    else if (customer.getAmountSpent() >= 50) {
+                        newDiscountPercentage = 5;
+                    }
+
+                    Customer upgradedCustomer = new GoldCustomer(customer.getFirstName(), customer.getLastName(),
+                            customer.getGuestId(), customer.getAmountSpent(), newDiscountPercentage);
+
+                    preferredCustomerArray = addPreferredCustomerToPreferredCustomerArray(upgradedCustomer,
+                            preferredCustomerArray);
+                    regularCustomerArray = removeRegularCustomerFromRegularCustomerArray(guestArrayIndex,
+                            regularCustomerArray);
+                }
+                else if (customer.getAmountSpent() >= 50 && guestStatus.equals("gold")) {
+                    if (customer.getAmountSpent() >= 150) {
+                        ((GoldCustomer) customer).setDiscountPercentage(15);
+                    }
+                    else if (customer.getAmountSpent() >= 100) {
+                        ((GoldCustomer) customer).setDiscountPercentage(10);
+                    }
+                    else {
+                        ((GoldCustomer) customer).setDiscountPercentage(5);
+                    }
+                }
+            }
+
+            // TODO: Remove debug statements
+            System.out.println("Regular ---");
+            for (Customer c : regularCustomerArray) {
+                System.out.println(c);
+            }
+
+            System.out.println("Preferred ---");
+            for (Customer c : preferredCustomerArray) {
+                System.out.println(c);
+            }
         }
     }
 }
