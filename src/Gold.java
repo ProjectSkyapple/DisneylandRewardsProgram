@@ -1,7 +1,7 @@
-public class GoldCustomer extends Customer {
+public class Gold extends Customer {
     private int discountPercentage;
 
-    public GoldCustomer(String first, String last, String id, double amount, int discount) {
+    public Gold(String first, String last, String id, double amount, int discount) {
         super(first, last, id, amount);
         discountPercentage = discount;
     }

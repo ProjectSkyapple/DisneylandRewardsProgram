@@ -165,13 +165,13 @@ public class Main {
                     discountPercentage = Integer.parseInt(discountPercentageOrBonusBucks.substring(0,
                             discountPercentageOrBonusBucks.indexOf("%")));
 
-                    preferredCustomerArray[i] = new GoldCustomer(firstName, lastName, guestId, amountSpent,
+                    preferredCustomerArray[i] = new Gold(firstName, lastName, guestId, amountSpent,
                             discountPercentage);
                 }
                 else {
                     bonusBucks = Integer.parseInt(discountPercentageOrBonusBucks);
 
-                    preferredCustomerArray[i] = new PlatinumCustomer(firstName, lastName, guestId, amountSpent,
+                    preferredCustomerArray[i] = new Platinum(firstName, lastName, guestId, amountSpent,
                             bonusBucks);
                 }
             }
@@ -262,7 +262,7 @@ public class Main {
                 }
 
                 if (customer.getAmountSpent() >= 200) {
-                    Customer upgradedCustomer = new PlatinumCustomer(customer.getFirstName(),
+                    Customer upgradedCustomer = new Platinum(customer.getFirstName(),
                             customer.getLastName(), customer.getGuestId(), customer.getAmountSpent(),
                             (int) ((customer.getAmountSpent() - 200) / 5));
 
@@ -289,7 +289,7 @@ public class Main {
                         newDiscountPercentage = 5;
                     }
 
-                    Customer upgradedCustomer = new GoldCustomer(customer.getFirstName(), customer.getLastName(),
+                    Customer upgradedCustomer = new Gold(customer.getFirstName(), customer.getLastName(),
                             customer.getGuestId(), customer.getAmountSpent(), newDiscountPercentage);
 
                     preferredCustomerArray = addPreferredCustomerToPreferredCustomerArray(upgradedCustomer,
@@ -299,24 +299,24 @@ public class Main {
                 }
                 else if (customer.getAmountSpent() >= 50 && guestStatus.equals("gold")) {
                     if (customer.getAmountSpent() >= 150) {
-                        ((GoldCustomer) customer).setDiscountPercentage(15);
+                        ((Gold) customer).setDiscountPercentage(15);
                     }
                     else if (customer.getAmountSpent() >= 100) {
-                        ((GoldCustomer) customer).setDiscountPercentage(10);
+                        ((Gold) customer).setDiscountPercentage(10);
                     }
                     else {
-                        ((GoldCustomer) customer).setDiscountPercentage(5);
+                        ((Gold) customer).setDiscountPercentage(5);
                     }
                 }
             }
             else {
-                if (orderCost >= ((PlatinumCustomer) customer).getBonusBucks()) {
-                    orderCost -= ((PlatinumCustomer) customer).getBonusBucks();
-                    ((PlatinumCustomer) customer).setBonusBucks((int) (orderCost / 5));
+                if (orderCost >= ((Platinum) customer).getBonusBucks()) {
+                    orderCost -= ((Platinum) customer).getBonusBucks();
+                    ((Platinum) customer).setBonusBucks((int) (orderCost / 5));
                 }
                 else {
-                    ((PlatinumCustomer) customer).setBonusBucks(
-                            ((PlatinumCustomer) customer).getBonusBucks() - (int) Math.ceil(orderCost)
+                    ((Platinum) customer).setBonusBucks(
+                            ((Platinum) customer).getBonusBucks() - (int) Math.ceil(orderCost)
                     );
 
                     orderCost = 0;
@@ -344,7 +344,7 @@ public class Main {
             outputFileWriter.print(c.getGuestId() + " ");
             outputFileWriter.print(c.getFirstName() + " ");
             outputFileWriter.print(c.getLastName() + " ");
-            outputFileWriter.print(c.getAmountSpent() + "\n");
+            outputFileWriter.printf("%.2f\n", Math.round(c.getAmountSpent() * 100) / 100.0);
         }
 
         outputFileWriter.close();
@@ -356,13 +356,13 @@ public class Main {
             outputFileWriter.print(c.getGuestId() + " ");
             outputFileWriter.print(c.getFirstName() + " ");
             outputFileWriter.print(c.getLastName() + " ");
-            outputFileWriter.print(c.getAmountSpent() + " ");
+            outputFileWriter.printf("%.2f ", Math.round(c.getAmountSpent() * 100) / 100.0);
 
             if (c.getAmountSpent() >= 200) {
-                outputFileWriter.print(((PlatinumCustomer) c).getBonusBucks() + "\n");
+                outputFileWriter.print(((Platinum) c).getBonusBucks() + "\n");
             }
             else {
-                outputFileWriter.print(((GoldCustomer) c).getDiscountPercentage() + "%\n");
+                outputFileWriter.print(((Gold) c).getDiscountPercentage() + "%\n");
             }
         }
 
