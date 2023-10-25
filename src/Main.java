@@ -262,7 +262,22 @@ public class Main {
                 continue; // Continue to the next line.
             }
 
-            drinkSize = orderLineScanner.next().charAt(0);
+            drinkSizeString = orderLineScanner.next();
+
+            // Order line input validation #3: Line drink size must be "S", "M", or "L".
+            if (drinkSizeString.length() > 1) { // If drink size is more than one character
+                orderLineScanner.close();
+                continue; // Continue to the next line.
+            }
+            // If drink size is not S, M, or L
+            else if ( !(drinkSizeString.equals("S") || drinkSizeString.equals("M") || drinkSizeString.equals("L")) ) {
+                orderLineScanner.close();
+                continue; // Continue to the next line.
+            }
+            else {
+                drinkSize = drinkSizeString.charAt(0);
+            }
+
             drinkType = orderLineScanner.next();
             pricePerSquareInch = orderLineScanner.nextDouble();
             numDrinks = orderLineScanner.nextInt();
