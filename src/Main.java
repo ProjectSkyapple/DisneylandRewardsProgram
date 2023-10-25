@@ -286,7 +286,15 @@ public class Main {
                 continue; // Continue to the next line.
             }
 
-            pricePerSquareInch = orderLineScanner.nextDouble();
+            // Order line input validation #5: Line graphic price per square inch contains no garbage characters.
+            try {
+                pricePerSquareInch = orderLineScanner.nextDouble();
+            }
+            catch (java.util.InputMismatchException exception) {
+                orderLineScanner.close();
+                continue; // Continue to the next line.
+            }
+
             numDrinks = orderLineScanner.nextInt();
 
             double orderCost = calculateOrderCost(drinkSize, drinkType, pricePerSquareInch, numDrinks);
