@@ -145,7 +145,7 @@ public class Main {
         }
         catch (FileNotFoundException exception) { /* Do nothing when a FileNotFoundException is thrown. */ }
 
-        Customer[] preferredCustomerArray = null;
+        Customer[] preferredCustomerArray = new Customer[0];
 
         if (numPreferredCustomers > 0) {
             preferredCustomerArray = new Customer[numPreferredCustomers];
@@ -238,7 +238,7 @@ public class Main {
             }
 
             if (!guestIdMatchesOrder) { // If not in regular customer array, check preferred customer array.
-                for (int i = 0; i < numPreferredCustomers; i++) {
+                for (int i = 0; i < preferredCustomerArray.length; i++) {
                     if (preferredCustomerArray[i].getGuestId().equals(orderGuestId)) {
                         // TODO: Guest ID matches order.
                         guestIdMatchesOrder = true;
