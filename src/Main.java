@@ -145,7 +145,7 @@ public class Main {
         }
         catch (FileNotFoundException exception) { /* Do nothing when a FileNotFoundException is thrown. */ }
 
-        Customer[] preferredCustomerArray = new Customer[0];
+        Customer[] preferredCustomerArray = null;
 
         if (numPreferredCustomers > 0) {
             preferredCustomerArray = new Customer[numPreferredCustomers];
@@ -224,10 +224,12 @@ public class Main {
             // TODO: For core implementation, assume all orders in the order file are valid.
             orderGuestId = orderLineScanner.next();
 
+            // Order line input validation #2: Line guest ID matches a customer in either customer array.
             boolean guestIdMatchesOrder = false;
-            for (int i = 0; i < regularCustomerArray.length; i++) {
+            for (int i = 0; i < regularCustomerArray.length; i++) { // Check regular customer array first.
                 if (regularCustomerArray[i].getGuestId().equals(orderGuestId)) {
                     // TODO: Guest ID matches order.
+                    guestIdMatchesOrder = true;
                     customer = regularCustomerArray[i];
                     guestStatus = "regular";
                     guestArrayIndex = i;
@@ -235,22 +237,29 @@ public class Main {
                 }
             }
 
-            for (int i = 0; i < preferredCustomerArray.length; i++) {
-                if (preferredCustomerArray[i].getGuestId().equals(orderGuestId)) {
-                    // TODO: Guest ID matches order.
-                    customer = preferredCustomerArray[i];
-                    double guestAmountSpent = preferredCustomerArray[i].getAmountSpent();
+            if (!guestIdMatchesOrder) { // If not in regular customer array, check preferred customer array.
+                for (int i = 0; i < numPreferredCustomers; i++) {
+                    if (preferredCustomerArray[i].getGuestId().equals(orderGuestId)) {
+                        // TODO: Guest ID matches order.
+                        guestIdMatchesOrder = true;
+                        customer = preferredCustomerArray[i];
+                        double guestAmountSpent = preferredCustomerArray[i].getAmountSpent();
 
-                    if (guestAmountSpent >= 50 && guestAmountSpent < 200) {
-                        guestStatus = "gold";
-                    }
-                    else {
-                        guestStatus = "platinum";
-                    }
+                        if (guestAmountSpent >= 50 && guestAmountSpent < 200) {
+                            guestStatus = "gold";
+                        } else {
+                            guestStatus = "platinum";
+                        }
 
-                    guestArrayIndex = i;
-                    break;
+                        guestArrayIndex = i;
+                        break;
+                    }
                 }
+            }
+
+            if (!guestIdMatchesOrder) { // If not in either array
+                orderLineScanner.close();
+                continue; // Continue to the next line.
             }
 
             drinkSize = orderLineScanner.next().charAt(0);
