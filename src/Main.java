@@ -206,6 +206,19 @@ public class Main {
             double pricePerSquareInch;
             int numDrinks;
 
+            // Order line input validation #1: Line has correct number of fields.
+            int spaceCount = 0;
+            for (int i = 0; i < orderLine.length(); i++) {
+                if (orderLine.charAt(i) == ' ') {
+                    spaceCount++;
+                }
+            }
+
+            if (spaceCount != 4) { // If there are more or less than 5 fields (4 spaces) in the line
+                // Continue to the next order line (ignore current one).
+                continue;
+            }
+
             Scanner orderLineScanner = new Scanner(orderLine);
 
             // TODO: For core implementation, assume all orders in the order file are valid.
