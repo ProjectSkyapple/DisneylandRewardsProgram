@@ -223,16 +223,8 @@ public class Main {
 
             // TODO: For core implementation, assume all orders in the order file are valid.
             orderGuestId = orderLineScanner.next();
-            drinkSize = orderLineScanner.next().charAt(0);
-            drinkType = orderLineScanner.next();
-            pricePerSquareInch = orderLineScanner.nextDouble();
-            numDrinks = orderLineScanner.nextInt();
 
-            double orderCost = calculateOrderCost(drinkSize, drinkType, pricePerSquareInch, numDrinks);
-
-            // TODO: Remove debug statement
-            System.out.println(orderCost);
-
+            boolean guestIdMatchesOrder = false;
             for (int i = 0; i < regularCustomerArray.length; i++) {
                 if (regularCustomerArray[i].getGuestId().equals(orderGuestId)) {
                     // TODO: Guest ID matches order.
@@ -260,6 +252,16 @@ public class Main {
                     break;
                 }
             }
+
+            drinkSize = orderLineScanner.next().charAt(0);
+            drinkType = orderLineScanner.next();
+            pricePerSquareInch = orderLineScanner.nextDouble();
+            numDrinks = orderLineScanner.nextInt();
+
+            double orderCost = calculateOrderCost(drinkSize, drinkType, pricePerSquareInch, numDrinks);
+
+            // TODO: Remove debug statement
+            System.out.println(orderCost);
 
             if (customer.getAmountSpent() < 200) {
                 double newAmountSpentBeforeAddedDiscounts = customer.getAmountSpent() + orderCost;
