@@ -279,6 +279,13 @@ public class Main {
             }
 
             drinkType = orderLineScanner.next();
+
+            // Order line input validation #4: Line drink type must be "soda", "tea", or "punch".
+            if (!drinkType.equals("soda") && !drinkType.equals("tea") && !drinkType.equals("punch")) {
+                orderLineScanner.close();
+                continue; // Continue to the next line.
+            }
+
             pricePerSquareInch = orderLineScanner.nextDouble();
             numDrinks = orderLineScanner.nextInt();
 
