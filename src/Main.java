@@ -295,7 +295,14 @@ public class Main {
                 continue; // Continue to the next line.
             }
 
-            numDrinks = orderLineScanner.nextInt();
+            // Order line input validation #6: Line number of drinks contains no garbage characters.
+            try {
+                numDrinks = orderLineScanner.nextInt();
+            }
+            catch (java.util.InputMismatchException exception) {
+                orderLineScanner.close();
+                continue; // Continue to the next line.
+            }
 
             double orderCost = calculateOrderCost(drinkSize, drinkType, pricePerSquareInch, numDrinks);
 
