@@ -1,3 +1,6 @@
+// Aaron Jacob
+// AXJ210111
+
 public class Customer {
     private String firstName;
     private String lastName;

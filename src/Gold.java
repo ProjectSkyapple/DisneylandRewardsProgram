@@ -1,3 +1,6 @@
+// Aaron Jacob
+// AXJ210111
+
 public class Gold extends Customer {
     private int discountPercentage;
 

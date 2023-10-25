@@ -1,3 +1,6 @@
+// Aaron Jacob
+// AXJ210111
+
 public class Platinum extends Customer {
     private int bonusBucks;
 
