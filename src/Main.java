@@ -94,11 +94,24 @@ public class Main {
     public static void main(String[] args) throws IOException {
         Scanner scnr = new Scanner(System.in);
 
-        System.out.print("Enter the regular customer file name: ");
-        String regularCustomerFileName = scnr.nextLine();
+        String regularCustomerFileName = "";
+        FileInputStream inputFileStream;
+        Scanner inputFileScanner = null;
 
-        FileInputStream inputFileStream = new FileInputStream(regularCustomerFileName);
-        Scanner inputFileScanner = new Scanner(inputFileStream);
+        boolean isFileNotFound = true;
+
+        while (isFileNotFound) {
+            System.out.print("Enter the regular customer file name: ");
+            regularCustomerFileName = scnr.nextLine();
+
+            try {
+                inputFileStream = new FileInputStream(regularCustomerFileName);
+                inputFileScanner = new Scanner(inputFileStream);
+                isFileNotFound = false;
+            } catch (FileNotFoundException exception) {
+                /* Do nothing here. Will loop again until file is found. */
+            }
+        }
 
         int numRegularCustomers = 0;
 
@@ -194,11 +207,23 @@ public class Main {
             }
         }
 
-        System.out.print("Enter the order file name: ");
-        String orderFileName = scnr.nextLine();
+        String orderFileName;
 
-        inputFileStream = new FileInputStream(orderFileName);
-        inputFileScanner = new Scanner(inputFileStream);
+        isFileNotFound = true;
+
+        while (isFileNotFound) {
+            System.out.print("Enter the order file name: ");
+            orderFileName = scnr.nextLine();
+
+            try {
+                inputFileStream = new FileInputStream(orderFileName);
+                inputFileScanner = new Scanner(inputFileStream);
+                isFileNotFound = false;
+            }
+            catch (FileNotFoundException exception) {
+                /* Do nothing here. Will loop again until file is found. */
+            }
+        }
 
         while (inputFileScanner.hasNextLine()) {
             String orderLine = inputFileScanner.nextLine();
