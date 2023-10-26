@@ -61,14 +61,14 @@ public class Main {
                                                                           Customer[] originalArray) {
         Customer[] newArray;
 
-        if (originalArray != null) {
+        if (originalArray != null) { // If the original preferred customer array already exists
             newArray = new Customer[originalArray.length + 1];
 
             for (int i = 0; i < originalArray.length; i++) {
                 newArray[i] = originalArray[i];
             }
         }
-        else {
+        else { // If the preferred customer array hasn't been created (because the input file didn't exist or was empty)
             newArray = new Customer[1];
         }
 
@@ -77,6 +77,7 @@ public class Main {
         return newArray;
     }
 
+    // Your typical basic array resizing algorithm.
     public static Customer[] removeRegularCustomerFromRegularCustomerArray(int index, Customer[] originalArray) {
         for (int i = index; i < originalArray.length - 1; i++) {
             originalArray[i] = originalArray[i + 1];
@@ -94,6 +95,7 @@ public class Main {
     public static void main(String[] args) throws IOException {
         Scanner scnr = new Scanner(System.in);
 
+        // Open regular customer file.
         String regularCustomerFileName = "";
         FileInputStream inputFileStream;
         Scanner inputFileScanner = null;
@@ -126,6 +128,7 @@ public class Main {
         inputFileStream = new FileInputStream(regularCustomerFileName);
         inputFileScanner = new Scanner(inputFileStream);
 
+        // Read in regular customers from the file into the regular customer array.
         String guestId;
         String firstName;
         String lastName;
@@ -147,6 +150,7 @@ public class Main {
 
         inputFileScanner.close();
 
+        // Open the preferred customer file (if there is one) and count the number of preferred customers in the file.
         System.out.print("Enter the preferred customer file name: ");
         String preferredCustomerFileName = scnr.nextLine();
 
@@ -165,10 +169,10 @@ public class Main {
         }
         catch (FileNotFoundException exception) { /* Do nothing when a FileNotFoundException is thrown. */ }
 
-        Customer[] preferredCustomerArray = null;
+        Customer[] preferredCustomerArray = null; // No array is created until a preferred customer is found.
 
-        if (numPreferredCustomers > 0) {
-            preferredCustomerArray = new Customer[numPreferredCustomers];
+        if (numPreferredCustomers > 0) { // If there are preferred customers
+            preferredCustomerArray = new Customer[numPreferredCustomers]; // Read in preferred customers into an array.
 
             inputFileStream = new FileInputStream(preferredCustomerFileName);
             inputFileScanner = new Scanner(inputFileStream);
@@ -184,14 +188,14 @@ public class Main {
                 amountSpent = inputFileScanner.nextDouble();
                 discountPercentageOrBonusBucks = inputFileScanner.next();
 
-                if (discountPercentageOrBonusBucks.contains("%")) {
+                if (discountPercentageOrBonusBucks.contains("%")) { // If the preferred customer is a gold customer
                     discountPercentage = Integer.parseInt(discountPercentageOrBonusBucks.substring(0,
                             discountPercentageOrBonusBucks.indexOf("%")));
 
                     preferredCustomerArray[i] = new Gold(firstName, lastName, guestId, amountSpent,
                             discountPercentage);
                 }
-                else {
+                else { // If the customer is platinum
                     bonusBucks = Integer.parseInt(discountPercentageOrBonusBucks);
 
                     preferredCustomerArray[i] = new Platinum(firstName, lastName, guestId, amountSpent,
@@ -207,6 +211,7 @@ public class Main {
             }
         }
 
+        // Open order file
         String orderFileName;
 
         isFileNotFound = true;
@@ -225,6 +230,8 @@ public class Main {
             }
         }
 
+        // FOR EACH LINE IN THE ORDER FILE *****************************************************************************
+        // *************************************************************************************************************
         while (inputFileScanner.hasNextLine()) {
             String orderLine = inputFileScanner.nextLine();
 
@@ -262,7 +269,7 @@ public class Main {
                 if (regularCustomerArray[i].getGuestId().equals(orderGuestId)) {
                     // TODO: Guest ID matches order.
                     guestIdMatchesOrder = true;
-                    customer = regularCustomerArray[i];
+                    customer = regularCustomerArray[i]; // Get the corresponding customer.
                     guestStatus = "regular";
                     guestArrayIndex = i;
                     break;
@@ -338,14 +345,16 @@ public class Main {
                 continue; // Continue to the next line.
             }
 
+            // Calculate raw order cost.
             double orderCost = calculateOrderCost(drinkSize, drinkType, pricePerSquareInch, numDrinks);
 
             // TODO: Remove debug statement
             System.out.println(orderCost);
 
-            if (customer.getAmountSpent() < 200) {
+            if (customer.getAmountSpent() < 200) { // If the customer is already regular or gold
                 double newAmountSpentBeforeAddedDiscounts = customer.getAmountSpent() + orderCost;
 
+                // Determine if the gold discounts apply after applying the raw order cost and apply those discounts.
                 if (newAmountSpentBeforeAddedDiscounts >= 150) {
                     customer.setAmountSpent(customer.getAmountSpent() + 0.85 * orderCost);
                 }
@@ -359,22 +368,22 @@ public class Main {
                     customer.setAmountSpent(newAmountSpentBeforeAddedDiscounts);
                 }
 
-                if (customer.getAmountSpent() >= 200) {
+                if (customer.getAmountSpent() >= 200) { // If new amount spent makes regular or gold into platinum
                     Customer upgradedCustomer = new Platinum(customer.getFirstName(),
                             customer.getLastName(), customer.getGuestId(), customer.getAmountSpent(),
-                            (int) ((customer.getAmountSpent() - 200) / 5));
+                            (int) ((customer.getAmountSpent() - 200) / 5)); // Formula for calculating initial bonus
 
-                    if (guestStatus.equals("regular")) {
+                    if (guestStatus.equals("regular")) { // If originally regular, move them to preferred array.
                         preferredCustomerArray = addPreferredCustomerToPreferredCustomerArray(upgradedCustomer,
                                 preferredCustomerArray);
                         regularCustomerArray = removeRegularCustomerFromRegularCustomerArray(guestArrayIndex,
                                 regularCustomerArray);
                     }
                     else {
-                        preferredCustomerArray[guestArrayIndex] = upgradedCustomer;
+                        preferredCustomerArray[guestArrayIndex] = upgradedCustomer; // Otherwise, replace gold with platinum.
                     }
                 }
-                else if (customer.getAmountSpent() >= 50 && guestStatus.equals("regular")) {
+                else if (customer.getAmountSpent() >= 50 && guestStatus.equals("regular")) { // If orig. reg. -> gold
                     int newDiscountPercentage = 0;
 
                     if (customer.getAmountSpent() >= 150) {
@@ -395,7 +404,7 @@ public class Main {
                     regularCustomerArray = removeRegularCustomerFromRegularCustomerArray(guestArrayIndex,
                             regularCustomerArray);
                 }
-                else if (customer.getAmountSpent() >= 50 && guestStatus.equals("gold")) {
+                else if (customer.getAmountSpent() >= 50 && guestStatus.equals("gold")) { // If gold remains gold
                     if (customer.getAmountSpent() >= 150) {
                         ((Gold) customer).setDiscountPercentage(15);
                     }
@@ -407,14 +416,14 @@ public class Main {
                     }
                 }
             }
-            else {
+            else { // If customer is already a platinum customer
                 if (orderCost >= ((Platinum) customer).getBonusBucks()) {
-                    orderCost -= ((Platinum) customer).getBonusBucks();
-                    ((Platinum) customer).setBonusBucks((int) (orderCost / 5));
+                    orderCost -= ((Platinum) customer).getBonusBucks(); // Apply bonus bucks discount
+                    ((Platinum) customer).setBonusBucks((int) (orderCost / 5)); // Calculate bonus earned (1 b.b./$5)
                 }
                 else {
                     ((Platinum) customer).setBonusBucks(
-                            ((Platinum) customer).getBonusBucks() - (int) Math.ceil(orderCost)
+                            ((Platinum) customer).getBonusBucks() - (int) Math.ceil(orderCost) // Order cost is fully covered by bonus bucks
                     );
 
                     orderCost = 0;
